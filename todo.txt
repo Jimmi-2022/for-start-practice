@@ -1,7 +1,7 @@
 Stack: Next / React / Typescript / Zustand / Framer-motion / Tailwind
 
-[] - Color scheme
-[] - Интерфейс (ui компоненты)
+[x] - Color scheme
+[x] - Интерфейс (ui компоненты)
 [] - Карточки и характеристики
 
 [] - Начало игры
