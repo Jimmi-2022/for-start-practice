@@ -1,11 +1,14 @@
-import { Button } from '@/components/ui/button/Button'
+import { useGameStore } from '@/store/game/game.store'
+import WelcomeScreen from './WelcomeScreen'
+import { GameBoard } from './board/GameBoard'
 
 function Home() {
+	const {isGameStarted} = useGameStore()
+
 	return (
-		<>
-			<h1>START GAME</h1>
-			<Button variant='primary'>START</Button>
-		</>
+		<main>
+			{isGameStarted ? <GameBoard/> : <WelcomeScreen/>}
+		</main>
 	)
 }
 
