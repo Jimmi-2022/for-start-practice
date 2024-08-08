@@ -1,6 +1,8 @@
 import { create } from 'zustand'
+import { endTurnAction } from './actions/end-turn'
 import { createDeck } from './create-deck'
-import { type IGameStore } from './game.types'
+import { type IGameStore, type IHero } from './game.types'
+
 
 const initialPlayerData: IHero = {
 	deck: createDeck(),
@@ -8,10 +10,20 @@ const initialPlayerData: IHero = {
 	mana: 1,
 }
 
-const useGameStore = create<IGameStore>((set) => ({
+const initialGameData = {
 	player: initialPlayerData,
 	opponent:initialPlayerData,
-	currentTurn: 'player',				
+	currentTurn: 'player',
+	isGameOver: false,
+}
+
+const useGameStore = create<IGameStore>((set, get) => ({
+	...initialGameData,
+	startGame: () => set(initialGameData),
+	endTurn: () => set(endTurnAction(get)),
+	playCard: (cardId: number) => {
+		set((state) => playCardAction(state, cardId))
+	},			
 }))
 
 export { useGameStore }
