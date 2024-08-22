@@ -1,67 +1,43 @@
+import { PlayerInfo } from './PlayerInfo';
+import { HandCard } from '@/pages/home/board/hand-card/HandCard.tsx';
 import { useGameStore } from '@/store/game/game.store';
 
 export function GameBoard() {
   const { player, opponent, playCard } = useGameStore();
 
-  const calculateRotationOpponent = (index: number, total: number) => {
-    const middle = (total - 1) / 2;
-    return -((index - middle) * 10);
-  };
-
-  const calculateRotation = (index: number, total: number) => {
-    const middle = (total - 1) / 2;
-    return (index - middle) * 10;
-  };
-
   return (
-    <div>
-      <div>
+    <div
+      className="relative h-screen w-full grid grid-rows-2"
+      style={{ gridTemplateRows: '1fr .1fr 1fr' }}
+    >
+      <section className="pt-36 px-20">
         <div>
-          <h1>Opponent</h1>
-          <p>HP: {opponent.health}</p>
-          <p>Mana: {opponent.mana}</p>
+          <PlayerInfo player={opponent} typePlayer="opponent" />
+          <div className="-top-12 absolute w-full ">
+            <div className="flex items-center justify-center">
+              {opponent.deck
+                .filter(card => !card.isOnBoard)
+                .slice(0, 6)
+                .map((card, index, array) => (
+                  <HandCard
+                    card={card}
+                    arrayLength={array.length}
+                    index={index}
+                    onClick={() => playCard(card.id)}
+                    isHided
+                  />
+                ))}
+            </div>
+          </div>
         </div>
-        <div className="-mt-44 flex items-center justify-center">
+
+        <div className="px-20 flex items-center justify-center gap-1">
           {opponent.deck
-            .filter((card) => !card.isOnBoard)
-            .slice(0, 6)
-            .map((card, index, array) => (
+            .filter(card => card.isOnBoard)
+
+            .map(card => (
               <button
-                className="h-36 w-24 bg-yellow-300 shadow inline-block -ml-2 rounded-lg"
-                style={{
-                  transform: `rotate(${calculateRotationOpponent(index, array.length)}deg)`,
-                }}
-                key={card.id}
-                onClick={() => playCard(card.id)}
-              ></button>
-            ))}
-        </div>
-      </div>
-
-      <section>
-        <div className="h-[50vh]">
-          {opponent.deck
-            .filter((card) => card.isOnBoard)
-
-            .map((card) => (
-              <button
-                className="h-60 w-44 shadow inline-block mx-1 rounded-lg"
-                key={card.id}
-              >
-                <img alt={card.name} src={card.imageUrl} draggable="false" />
-              </button>
-            ))}
-        </div>
-
-        <hr />
-
-        <div className="h-[50vh]">
-          {player.deck
-            .filter((card) => card.isOnBoard)
-
-            .map((card) => (
-              <button
-                className="h-60 w-44 shadow inline-block mx-1 rounded-lg"
+                className="h-[11.3rem] w-32 shadow mx-1 rounded-lg"
                 key={card.id}
               >
                 <img alt={card.name} src={card.imageUrl} draggable="false" />
@@ -70,27 +46,41 @@ export function GameBoard() {
         </div>
       </section>
 
-      <div className="absolute left-3 bottom-10">
-        <h1>Player</h1>
-        <p>HP: {player.health}</p>
-        <p>Mana: {player.mana}</p>
-      </div>
+      <hr />
 
-      <div className="-bottom-14 absolute w-full flex items-center justify-center">
-        {player.deck
-          .filter((card) => !card.isOnBoard)
-          .slice(0, 6)
-          .map((card, index, array) => (
-            <button
-              className="h-36 w-24 bg-yellow-300 shadow inline-block -ml-2 rounded-lg"
-              style={{
-                transform: `rotate(${calculateRotation(index, array.length)}deg)`,
-              }}
-              key={card.id}
-              onClick={() => playCard(card.id)}
-            ></button>
-          ))}
-      </div>
+      <section className="pb-36">
+        <div className="px-20 flex items-center justify-center gap-1 shadow-xl">
+          {player.deck
+            .filter(card => card.isOnBoard)
+
+            .map(card => (
+              <button
+                className="h-[11.3rem] w-32 mx-1 rounded-lg shadow-2xl"
+                key={card.id}
+              >
+                <img alt={card.name} src={card.imageUrl} draggable="false" />
+              </button>
+            ))}
+        </div>
+
+        <PlayerInfo player={player} typePlayer="player" />
+
+        <div className="-bottom-11 absolute w-full ">
+          <div className="flex items-center justify-center">
+            {player.deck
+              .filter(card => !card.isOnBoard)
+              .slice(0, 6)
+              .map((card, index, array) => (
+                <HandCard
+                  card={card}
+                  arrayLength={array.length}
+                  index={index}
+                  onClick={() => playCard(card.id)}
+                />
+              ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
